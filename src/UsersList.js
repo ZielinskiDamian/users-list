@@ -6,6 +6,7 @@ const UsersList = () => {
 		email: '',
 		usertype: 'Admin',
 	});
+	const [users, setUsers] = useState([]);
 	const handleInputChange = (e) => {
 		const target = e.target;
 		const name = target.name;
@@ -13,13 +14,19 @@ const UsersList = () => {
 			return { ...prevDataForm, [name]: target.value };
 		});
 	};
-	console.log(FormData);
+
+	const setUser = (e) => {
+		e.preventDefault();
+		setUsers(users.concat({ ...FormData, id: Date.now() }));
+	};
+	const removeUser = (id) => {
+		const filteredUsers = users.filter((user) => user.id !== id);
+		setUsers(filteredUsers);
+	};
+	console.log(users);
 	return (
 		<div className='usersList'>
-			<form>
-				<h2>{FormData.username}</h2>
-				<h2>{FormData.email}</h2>
-				<h2>{FormData.usertype}</h2>
+			<form onSubmit={setUser}>
 				<label htmlFor='username'> User name </label>
 				<input
 					type='text'
@@ -27,8 +34,7 @@ const UsersList = () => {
 					name='username'
 					placeholder='User name'
 					onChange={handleInputChange}
-					value = {FormData.username}
-
+					value={FormData.username}
 				/>
 				<label htmlFor='email'> User email </label>
 				<input
@@ -37,7 +43,7 @@ const UsersList = () => {
 					name='email'
 					placeholder='User email'
 					onChange={handleInputChange}
-					value = {FormData.email}
+					value={FormData.email}
 				/>
 				<label htmlFor='usertype'> User type </label>
 				<select id='usertype' name='usertype' onChange={handleInputChange}>
@@ -46,6 +52,21 @@ const UsersList = () => {
 				</select>
 				<button>Save</button>
 			</form>
+			<div className='list'>
+				{users.map((user) => {
+					return (
+						<div
+							className='userItem'
+							key={user.id}
+							onClick={() => removeUser(user.id)}
+						>
+							<p>{user.username}</p>
+							<p>{user.email}</p>
+							<p>{user.usertype}</p>
+						</div>
+					);
+				})}
+			</div>
 		</div>
 	);
 };
